@@ -1,0 +1,4 @@
+{% set environment = salt['pillar.get']('environment') %}
+{% set rancher_db_name = salt['pillar.get']('rancher:server:db:name') %}
+{% set rancher_db_user = salt['pillar.get']('rancher:server:db:user') %}
+{% set rancher_db_password = salt['pillar.get']('rancher:server:db:password') %}

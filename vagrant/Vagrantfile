@@ -1,0 +1,94 @@
+# vi: set ft=ruby :
+
+SALT_VERSION = "v2016.3.2"
+USER = "vagrant"
+ENV_NAME = "VAGRANT"
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/trusty64"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+    v.cpus = 2
+  end
+
+  config.vm.define "master" do |node|
+    node.vm.hostname = "master"
+    node.vm.network :private_network, ip: "192.168.33.10"
+    node.vm.network "forwarded_port", guest: 8080, host: 8080
+
+    node.vm.synced_folder "../../rancher-salt", "/home/#{USER}/rancher-salt"
+    node.vm.provision "file", source: "../pillar/properties-EXAMPLE.sls", destination: "/home/#{USER}/config/properties-#{ENV_NAME}.sls"
+    node.vm.provision "file", source: "../pillar/top.sls", destination: "/home/#{USER}/config/top.sls"
+
+    # salt-master provisioning
+    node.vm.provision :salt do |salt|
+      salt.install_type = "git"
+      salt.install_args = "#{SALT_VERSION}"
+      salt.install_master = true
+      salt.master_config = "configs/master"
+      salt.run_highstate = false
+      salt.master_key = 'keys/master.pem'
+      salt.master_pub = 'keys/master.pub'
+
+      salt.minion_config = "configs/minion"
+      salt.minion_key = 'keys/master.pem'
+      salt.minion_pub = 'keys/master.pub'
+
+      salt.seed_master = {
+        'node01' => 'keys/node01.pub',
+        'node02' => 'keys/node02.pub',
+        'master' => 'keys/master.pub'
+      }
+    end
+
+    # Replace ENV_NAME in salt minion and the top file, also replace USER in salt master config
+    node.vm.provision "shell", run: "always", inline: <<-SHELL
+      sed -i 's/ENV_NAME/#{ENV_NAME}/g' /home/'#{USER}'/config/top.sls
+      sed -i 's/ENV_NAME/#{ENV_NAME}/g' /etc/salt/minion
+      sed -i 's/USER/#{USER}/g' /etc/salt/master
+      restart salt-minion
+      restart salt-master
+    SHELL
+  end
+
+  config.vm.define "node01" do |node|
+    node.vm.hostname = "node01"
+    node.vm.network :private_network, ip: "192.168.33.20"
+
+    # salt-minion provisioning
+    node.vm.provision :salt do |salt|
+      salt.install_type = "git"
+      salt.install_args = "#{SALT_VERSION}"
+      salt.minion_config = "configs/minion"
+      salt.minion_key = 'keys/node01.pem'
+      salt.minion_pub = 'keys/node01.pub'
+    end
+
+    # Replace ENV_NAME in salt minion config
+    node.vm.provision "shell", run: "always", inline: <<-SHELL
+      sed -i 's/ENV_NAME/#{ENV_NAME}/g' /etc/salt/minion
+      restart salt-minion
+    SHELL
+  end
+
+  config.vm.define "node02" do |node|
+    node.vm.hostname = "node02"
+    node.vm.network :private_network, ip: "192.168.33.30"
+
+    # salt-minion provisioning
+    node.vm.provision :salt do |salt|
+      salt.install_type = "git"
+      salt.install_args = "#{SALT_VERSION}"
+      salt.minion_config = "configs/minion"
+      salt.minion_key = 'keys/node02.pem'
+      salt.minion_pub = 'keys/node02.pub'
+    end
+
+    # Replace ENV_NAME in salt minion config
+    node.vm.provision "shell", run: "always", inline: <<-SHELL
+      sed -i 's/ENV_NAME/#{ENV_NAME}/g' /etc/salt/minion
+      restart salt-minion
+    SHELL
+  end
+end

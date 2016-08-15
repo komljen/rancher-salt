@@ -1,0 +1,8 @@
+# TODO Set only if registry role is available
+{% set registry_iface = salt['pillar.get']('docker:registry:iface', 'eth0') %}
+{% set registry_net = salt['mine.get']('roles:docker-registry','network.interfaces','grain').itervalues().next() %}
+{% set registry_ip = registry_net[registry_iface]['inet'][0]['address'] %}
+{% set registry_port = salt['pillar.get']('docker:registry:port', 5000) %}
+
+# TODO add insecure registry only if enabled on rancher
+DOCKER_OPTS="$DOCKER_OPTS --insecure-registry={{ registry_ip }}:{{ registry_port }} -s aufs"
