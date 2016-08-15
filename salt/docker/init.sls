@@ -2,7 +2,7 @@
 {% set kernelrelease = salt['grains.get']('kernelrelease') %}
 {% set docker_version = salt['pillar.get']('docker:version') %}
 {% set dockerpy_version = salt['pillar.get']('docker:dockerpy_version') %}
-{% set pip_version = '7.1.2' %}
+{% set pip_version = '8.1.2' %}
 
 include:
   - common.python-setuptools
@@ -11,14 +11,13 @@ install_pip:
   cmd.run:
     - name: easy_install pip=={{ pip_version }}
     - unless: pip --version | grep -w {{ pip_version }}
+    - reload_modules: True
     - require:
       - pkg: python-setuptools
-    - reload_modules: True
 
-docker-python-dockerpy:
-  cmd.run:
-    - name: pip install docker-py=={{ dockerpy_version }}
-    - unless: pip freeze docker-py | grep "{{ dockerpy_version }}"
+dockerpy_module:
+  pip.installed:
+    - name: docker-py=={{ dockerpy_version }}
     - require:
       - cmd: install_pip
 

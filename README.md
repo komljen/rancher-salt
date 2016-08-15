@@ -6,6 +6,7 @@ Support for:
 
  * Rancher server - single node with external mysql database
  * Rancher agents - automatically provisioned on server start
+ * Docker registry
 
 Those states are tested on Ubuntu 14.04 and Salt v2016.3.2.
 
@@ -37,5 +38,5 @@ To start Rancher deployment run orchestrate state:
 ```
 sudo salt-run state.orchestrate deploy.rancher pillar='{environment: VAGRANT}'
 ```
-It will take a few minutes to complete. Then you can check Rancher status at: http://localhost:8080
+It will take a few minutes to complete. Then you can check Rancher status at: ```http://localhost:8080```
 
