@@ -38,5 +38,6 @@ To start Rancher deployment run orchestrate state:
 ```
 sudo salt-run state.orchestrate deploy.rancher pillar='{environment: VAGRANT}'
 ```
-It will take a few minutes to complete. Then you can check Rancher status at: ```http://localhost:8080```
+It will take a few minutes to complete. Then you can check Rancher status at: ```http://localhost:8080``` and check for available hosts on Rancher default environment:
 
+![Rancher default environment](https://www.dropbox.com/s/x2rh0d6kgbrzyrt/rancher_env.png?raw=true)
