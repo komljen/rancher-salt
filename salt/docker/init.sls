@@ -21,6 +21,12 @@ dockerpy_module:
     - require:
       - cmd: install_pip
 
+# https://github.com/saltstack/salt/issues/35455
+salt-minion:
+  service.running:
+    - watch:
+      - pip: dockerpy_module
+
 docker_repo:
   pkgrepo.managed:
     - name: deb https://apt.dockerproject.org/repo ubuntu-trusty main
