@@ -6,6 +6,9 @@
 {% set mysql_net = salt['mine.get']('roles:mysql-server','network.interfaces','grain').itervalues().next() %}
 {% set mysql_port = salt['pillar.get']('mysql:port', 3306) %}
 
+include:
+  - .environments
+
 rancher_image:
   dockerng.image_present:
     - name: rancher/server:{{ tag }}
@@ -25,3 +28,5 @@ rancher_container:
     - restart_policy: always
     - require:
       - dockerng: rancher_image
+    - require_in:
+      - cmd: rancher_server_api_wait

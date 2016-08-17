@@ -1,15 +1,18 @@
 # Node configuration
 nodes:
   master:
+    agentEnvironment: Default
     roles:
       - rancher-server
       - rancher-agent
       - docker-registry
   node01:
+    agentEnvironment: Default
     roles:
       - rancher-agent
       - mysql-server
   node02:
+    agentEnvironment: Kubernetes
     roles:
       - rancher-agent
 
@@ -30,6 +33,14 @@ rancher:
       name: rancher
       user: rancher
       password: rancher
+    # Create additional environments on startup
+    environments:
+      kubernetes:
+        - name: Kubernetes
+      swarm:
+        - name: Swarm
+      mesos:
+        - name: Mesos
 
 # Mysql settings
 mysql:
