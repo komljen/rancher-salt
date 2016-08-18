@@ -25,7 +25,9 @@ add_{{ env }}_environment:
              -X POST \
              -H 'Accept: application/json' \
              -H 'Content-Type: application/json' \
-             {% if env == 'kubernetes' %}
+             {% if env == 'cattle' %}
+             -d '{"name":"{{ rancher_env_name }}", "allowSystemRole":false, "members":[], "swarm":false, "kubernetes":false, "mesos":false, "virtualMachine":false, "publicDns":false, "servicesPortRange":null}' \
+             {% elif env == 'kubernetes' %}
              -d '{"name":"{{ rancher_env_name }}", "allowSystemRole":false, "members":[], "swarm":false, "kubernetes":true, "mesos":false, "virtualMachine":false, "publicDns":false, "servicesPortRange":null}' \
              {% elif env == 'swarm' %}
              -d '{"name":"{{ rancher_env_name }}", "allowSystemRole":false, "members":[], "swarm":true, "kubernetes":false, "mesos":false, "virtualMachine":false, "publicDns":false, "servicesPortRange":null}' \
@@ -34,19 +36,9 @@ add_{{ env }}_environment:
              {% endif %}
              'http://{{ rancher_ip }}:{{ rancher_port }}/v1/projects'
     - unless: |
-        {% if env == 'kubernetes' %}
         curl -s 'http://{{ rancher_ip }}:{{ rancher_port }}/v1/projects' \
              | jq .data[].name \
              | grep -w '{{ rancher_env_name }}'
-        {% elif env == 'swarm' %}
-        curl -s 'http://{{ rancher_ip }}:{{ rancher_port }}/v1/projects' \
-             | jq .data[].name \
-             | grep -w '{{ rancher_env_name }}'
-        {% elif env == 'mesos' %}
-        curl -s 'http://{{ rancher_ip }}:{{ rancher_port }}/v1/projects' \
-             | jq .data[].name \
-             | grep -w '{{ rancher_env_name }}'
-        {% endif %}
     - require:
       - cmd: rancher_server_api_wait
 {% endfor %}

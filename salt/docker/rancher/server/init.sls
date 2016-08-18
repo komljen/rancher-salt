@@ -1,7 +1,7 @@
 # vi: set ft=yaml.jinja :
 {% import 'docker/global_vars.jinja' as conf with context %}
-{% set tag = salt['pillar.get']('rancher:version', 'stable') %}
-{% set port = salt['pillar.get']('rancher:port', 8080) %}
+{% set tag = salt['pillar.get']('rancher:server:version', 'stable') %}
+{% set port = salt['pillar.get']('rancher:server:port', 8080) %}
 {% set mysql_iface = salt['pillar.get']('mysql:iface', 'eth0') %}
 {% set mysql_net = salt['mine.get']('roles:mysql-server','network.interfaces','grain').itervalues().next() %}
 {% set mysql_port = salt['pillar.get']('mysql:port', 3306) %}
