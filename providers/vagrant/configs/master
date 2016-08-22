@@ -1,12 +1,12 @@
 file_recv: True
 file_roots:
   base:
-    - /home/USER/rancher-salt/salt
+    - /home/vagrant/rancher-salt/salt
     - /var/cache/salt/master/minions
 pillar_roots:
   base:
-    - /home/USER/config
-    - /home/USER/rancher-salt/pillar
+    - /home/vagrant/rancher-salt/pillar
+    - /home/vagrant/config
 worker_threads: 1
 hash_type: sha256
 jinja_trim_blocks: True

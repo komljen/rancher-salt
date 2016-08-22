@@ -3,6 +3,9 @@
 {% set tag = salt['pillar.get']('rancher:server:version', 'stable') %}
 {% set port = salt['pillar.get']('rancher:server:port', 8080) %}
 {% set mysql_iface = salt['pillar.get']('mysql:iface', 'eth0') %}
+{% if grains['provider'] == 'VAGRANT' %}
+  {% set mysql_iface = 'eth1' %}
+{% endif %}
 {% set mysql_net = salt['mine.get']('roles:mysql-server','network.interfaces','grain').itervalues().next() %}
 {% set mysql_port = salt['pillar.get']('mysql:port', 3306) %}
 

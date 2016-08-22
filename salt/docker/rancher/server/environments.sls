@@ -1,6 +1,9 @@
 # vi: set ft=yaml.jinja :
 {% import 'docker/global_vars.jinja' as conf with context %}
 {% set rancher_iface = salt['pillar.get']('rancher:server:iface', 'eth0') %}
+{% if grains['provider'] == 'VAGRANT' %}
+  {% set rancher_iface = 'eth1' %}
+{% endif %}
 {% set rancher_ip = salt['network.ip_addrs'](rancher_iface)[0] %}
 {% set rancher_port = salt['pillar.get']('rancher:server:port', 8080) %}
 {% set rancher_environments = salt['pillar.get']('rancher:server:environments') %}

@@ -1,5 +1,7 @@
 {% set host = salt['config.get']('host') %}
 {% set roles = salt['pillar.get']('nodes:' + host + ':roles') %}
+{% set aenv = salt['pillar.get']('nodes:' + host + ':agentEnvironment') %}
+agentEnvironment: {{ aenv }}
 {% if roles %}
 roles:
   {% for role in roles %}

@@ -1,9 +1,12 @@
 # vi: set ft=yaml.jinja :
 {% import 'docker/global_vars.jinja' as conf with context %}
 {% set rancher_iface = salt['pillar.get']('rancher:server:iface', 'eth0') %}
+{% if grains['provider'] == 'VAGRANT' %}
+  {% set rancher_iface = 'eth1' %}
+{% endif %}
 {% set rancher_net = salt['mine.get']('roles:rancher-server','network.interfaces','grain').itervalues().next() %}
 {% set rancher_port = salt['pillar.get']('rancher:server:port', 8080) %}
-{% set rancher_environment = salt['pillar.get']('nodes:' + conf.hostname + ':agentEnvironment', 'Default') %}
+{% set rancher_environment = salt['grains.get']('agentEnvironment', 'Default') %}
 
 agent_registration_module:
   pip.installed:

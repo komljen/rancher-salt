@@ -1,17 +1,11 @@
 # vi: set ft=yaml.jinja :
-{% set force = salt['pillar.get']('force', 'False') %}
-{% set environment = salt['pillar.get']('environment') %}
 {% set test = salt['pillar.get']('test', 'False') %}
 
-{% if environment %}
 docker_setup:
   salt.state:
-    - tgt: 'environment:{{ environment }}'
-    - tgt_type: grain
+    - tgt: '*'
     - sls: docker
     - test: {{ test }}
-    - pillar:
-        environment: {{ environment }}
 
 docker_registry_setup:
   salt.state:
@@ -24,34 +18,28 @@ docker_registry_setup:
 
 mysql_server_setup:
   salt.state:
-    - tgt: 'G@roles:mysql-server and G@environment:{{ environment }}'
-    - tgt_type: compound
+    - tgt: 'roles:mysql-server'
+    - tgt_type: grain
     - sls: docker.mysql
     - test: {{ test }}
-    - pillar:
-        environment: {{ environment }}
     - require:
       - salt: docker_setup
 
 rancher_server_setup:
   salt.state:
-    - tgt: 'G@roles:rancher-server and G@environment:{{ environment }}'
-    - tgt_type: compound
+    - tgt: 'roles:rancher-server'
+    - tgt_type: grain
     - sls: docker.rancher.server
     - test: {{ test }}
-    - pillar:
-        environment: {{ environment }}
     - require:
       - salt: docker_setup
 
 rancher_agent_setup:
   salt.state:
-    - tgt: 'G@roles:rancher-agent and G@environment:{{ environment }}'
-    - tgt_type: compound
+    - tgt: 'roles:rancher-agent'
+    - tgt_type: grain
     - sls: docker.rancher.agent
     - test: {{ test }}
-    - pillar:
-        environment: {{ environment }}
     - require:
       - salt: rancher_server_setup
-{% endif %}
+

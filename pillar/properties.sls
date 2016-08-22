@@ -21,14 +21,14 @@ docker:
   registry:
     data_path: /var/lib/docker-registry
     port: 5000
-    iface: eth1
+    #iface: eth0
 
 # Rancher settings
 rancher:
   server:
     version: stable
     port: 8080
-    iface: eth1
+    #iface: eth0
     db:
       name: rancher
       user: rancher
@@ -47,4 +47,5 @@ mysql:
   version: 5.7.14
   data_path: /var/lib/mysql
   port: 3306
-  iface: eth1
+  #iface: eth0
+
