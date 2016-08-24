@@ -80,15 +80,16 @@ If everything is fine you can start provisioning (master will start first and th
 salt-cloud -m /etc/salt/cloud.maps.d/rancher.conf -P -y
 ```
 
-Now you can connect to master node using new pem key (/etc/salt/salt_cloud_key.pem) and check environment. If all minions are connected deploy rancher from the master:
+Now you can connect to the master node using new pem key /etc/salt/salt_cloud_key.pem. Check environment and if all minions are connected deploy rancher:
 
 ```
+sudo salt '*' test.ping
 sudo salt-run state.orchestrate deploy.rancher
 ```
 
 To access rancher web UI at ```http://AWS_MASTER_PUBLIC_DNS:8080``` you need to open 8080 port first.
 
-If you want to destroy all instances (EBS volumes will be deleted also):
+If you want to destroy all instances (EBS volumes will be deleted also) run following command:
 
 ```
 salt-cloud -m /etc/salt/cloud.maps.d/rancher.conf -d -y
@@ -100,4 +101,3 @@ salt-cloud -m /etc/salt/cloud.maps.d/rancher.conf -d -y
 docker cp salt-cloud:/etc/salt/salt_cloud_key.pem .
 docker rm -f salt-cloud
 ```
-
