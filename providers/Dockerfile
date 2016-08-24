@@ -9,7 +9,6 @@ RUN \
           python-setuptools \
           vim \
           curl \
-          jq \
           git-core && \
 rm -rf /var/lib/apt/lists/*
 

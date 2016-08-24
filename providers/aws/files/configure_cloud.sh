@@ -18,8 +18,8 @@ aws ec2 authorize-security-group-ingress \
     --protocol all --port 0-65535
 
 # Get group ID and Subnet ID
-export SG_ID=$(aws ec2 describe-security-groups --group-name SaltCloudInstances| jq .SecurityGroups[].GroupId)
-export SUBNET_ID=$(aws ec2 describe-subnets --filters Name=availabilityZone,Values=${AWS_DEFAULT_AZ} | jq .Subnets[].SubnetId)
+export SG_ID=$(aws ec2 describe-security-groups --group-name SaltCloudInstances --query SecurityGroups[].GroupId --output text)
+export SUBNET_ID=$(aws ec2 describe-subnets --filters Name=availabilityZone,Values=${AWS_DEFAULT_AZ} --query Subnets[].SubnetId --output text)
 
 echo "Updating /etc/salt/cloud.providers.d/aws.conf and /etc/salt/cloud.profiles.d/ubuntu_ec2.conf:"
 sed "
