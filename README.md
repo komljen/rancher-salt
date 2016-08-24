@@ -1,4 +1,6 @@
 # Rancher container platform deployment
+[![Flattr this git repo](https://img.shields.io/badge/donate-flattr-red.svg)](https://flattr.com/submit/auto?user_id=komljen&url=https://github.com/komljen/rancher-salt
+&title=Rancher container platform deployment&language=&tags=github&category=software)
 
 Salt states for Rancher container platform deployment.
 
