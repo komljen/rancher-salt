@@ -65,29 +65,22 @@ docker run -d -e AWS_ACCESS_KEY_ID=KEY \
               -e AWS_DEFAULT_AZ=us-west-2a \
               -e AWS_AMI_ID=ami-d732f0b7 \
               --name salt-cloud \
-              komljen/salt-cloud bash -c 'while true; do sleep 10; done'
+              komljen/salt-cloud
 ```
-Then attach to a running container:
+Then check for logs and attach to a running container:
 
 ```
+docker logs -f salt-cloud
 docker exec -i -t salt-cloud bash
 ```
 
-Now prepare salt config files with provided env variables:
-
-```
-./configure_cloud.sh
-```
-
-Above command will also create a new security group (SaltCloudInstances), open 22 port to public, allow communication between nodes and create new pem key (salt_cloud_key) and import it.
-
-Now you can start provisioning (master will start first and then all minion nodes will start in parallel):
+If everything is fine you can start provisioning (master will start first and then all minion nodes will start in parallel):
 
 ```
 salt-cloud -m /etc/salt/cloud.maps.d/rancher.conf -P -y
 ```
 
-Now you can connect to master node using new pem key (/etc/salt/salt_cloud_key.pem) and check environment. If all minions are connected deploy rancher:
+Now you can connect to master node using new pem key (/etc/salt/salt_cloud_key.pem) and check environment. If all minions are connected deploy rancher from the master:
 
 ```
 sudo salt-run state.orchestrate deploy.rancher

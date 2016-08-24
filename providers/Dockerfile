@@ -23,3 +23,4 @@ COPY aws/files/ubuntu_ec2.conf /etc/salt/cloud.profiles.d/ubuntu_ec2.conf
 COPY aws/files/rancher.conf /etc/salt/cloud.maps.d/rancher.conf
 COPY aws/files/configure_cloud.sh configure_cloud.sh
 
+CMD ["./configure_cloud.sh"]
