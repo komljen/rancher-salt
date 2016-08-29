@@ -80,7 +80,13 @@ If everything is fine you can start provisioning (master will start first and th
 salt-cloud -m /etc/salt/cloud.maps.d/rancher.conf -P -y
 ```
 
-Now you can connect to the master node using new pem key /etc/salt/salt_cloud_key.pem. Check environment and if all minions are connected deploy rancher:
+Now you can connect to the master node using new pem key /etc/salt/salt_cloud_key.pem. Check your master public IP address with:
+
+```
+salt-cloud -Q master
+```
+
+Check environment and if all minions are connected deploy rancher:
 
 ```
 sudo salt '*' test.ping
