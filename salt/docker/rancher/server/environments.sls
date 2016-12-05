@@ -21,6 +21,7 @@ rancher_server_api_wait:
 
 {% for env in rancher_environments %}
 {% set rancher_env_name = salt['pillar.get']('rancher:server:environments:' + env + ':name') %}
+{% set rancher_env_id = salt['cmd.run']('curl -s "http://' + rancher_ip + ':' + rancher_port|string + '/v2-beta/projectTemplates?name=' + rancher_env_name + '" | jq ".data[0].id"') %}
 add_{{ env }}_environment:
   cmd.run:
     - name: |
@@ -28,16 +29,8 @@ add_{{ env }}_environment:
              -X POST \
              -H 'Accept: application/json' \
              -H 'Content-Type: application/json' \
-             {% if env == 'cattle' %}
-             -d '{"name":"{{ rancher_env_name }}", "allowSystemRole":false, "members":[], "swarm":false, "kubernetes":false, "mesos":false, "virtualMachine":false, "publicDns":false, "servicesPortRange":null}' \
-             {% elif env == 'kubernetes' %}
-             -d '{"name":"{{ rancher_env_name }}", "allowSystemRole":false, "members":[], "swarm":false, "kubernetes":true, "mesos":false, "virtualMachine":false, "publicDns":false, "servicesPortRange":null}' \
-             {% elif env == 'swarm' %}
-             -d '{"name":"{{ rancher_env_name }}", "allowSystemRole":false, "members":[], "swarm":true, "kubernetes":false, "mesos":false, "virtualMachine":false, "publicDns":false, "servicesPortRange":null}' \
-             {% elif env == 'mesos' %}
-             -d '{"name":"{{ rancher_env_name }}", "allowSystemRole":false, "members":[], "swarm":false, "kubernetes":false, "mesos":true, "virtualMachine":false, "publicDns":false, "servicesPortRange":null}' \
-             {% endif %}
-             'http://{{ rancher_ip }}:{{ rancher_port }}/v1/projects'
+             -d '{"name":"{{ rancher_env_name }}", "projectTemplateId":{{ rancher_env_id }}, "allowSystemRole":false, "members":[], "virtualMachine":false, "servicesPortRange":null}' \
+             'http://{{ rancher_ip }}:{{ rancher_port }}//v2-beta/projects'
     - unless: |
         curl -s 'http://{{ rancher_ip }}:{{ rancher_port }}/v1/projects' \
              | jq .data[].name \
