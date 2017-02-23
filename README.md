@@ -13,7 +13,7 @@ Support for:
    * Vagrant
    * AWS
 
-Those states are tested on Ubuntu 14.04 and Salt v2016.3.2.
+Those states are tested on Ubuntu 14.04 and Salt v2016.3.5.
 
 Rancher default environment:
 ![Rancher default environment](https://www.dropbox.com/s/4vta5amp2igjgo8/rancher_env2.png?raw=true)
