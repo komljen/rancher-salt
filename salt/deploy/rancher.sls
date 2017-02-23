@@ -34,6 +34,15 @@ rancher_server_setup:
     - require:
       - salt: docker_setup
 
+rancher_server_add_envs:
+  salt.state:
+    - tgt: 'roles:rancher-server'
+    - tgt_type: grain
+    - sls: docker.rancher.server.environments
+    - test: {{ test }}
+    - require:
+      - salt: rancher_server_setup
+
 rancher_agent_setup:
   salt.state:
     - tgt: 'roles:rancher-agent'
@@ -42,4 +51,3 @@ rancher_agent_setup:
     - test: {{ test }}
     - require:
       - salt: rancher_server_setup
-

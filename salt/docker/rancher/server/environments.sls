@@ -8,17 +8,7 @@
 {% set rancher_port = salt['pillar.get']('rancher:server:port', 8080) %}
 {% set rancher_environments = salt['pillar.get']('rancher:server:environments') %}
 
-include:
-  - common.jq
-
 {% if rancher_environments %}
-rancher_server_api_wait:
-  cmd.run:
-    - name: |
-        wget --retry-connrefused --tries=30 -q --spider \
-             http://{{ rancher_ip }}:{{ rancher_port }}/v1
-    - unless: curl -s --connect-timeout 1 http://{{ rancher_ip }}:{{ rancher_port }}/v1
-
 {% for env in rancher_environments %}
 {% set rancher_env_name = salt['pillar.get']('rancher:server:environments:' + env + ':name') %}
 {% set rancher_env_id = salt['cmd.run']('curl -s "http://' + rancher_ip + ':' + rancher_port|string + '/v2-beta/projectTemplates?name=' + rancher_env_name + '" | jq ".data[0].id"') %}
@@ -30,12 +20,10 @@ add_{{ env }}_environment:
              -H 'Accept: application/json' \
              -H 'Content-Type: application/json' \
              -d '{"name":"{{ rancher_env_name }}", "projectTemplateId":{{ rancher_env_id }}, "allowSystemRole":false, "members":[], "virtualMachine":false, "servicesPortRange":null}' \
-             'http://{{ rancher_ip }}:{{ rancher_port }}//v2-beta/projects'
+             'http://{{ rancher_ip }}:{{ rancher_port }}/v2-beta/projects'
     - unless: |
         curl -s 'http://{{ rancher_ip }}:{{ rancher_port }}/v1/projects' \
              | jq .data[].name \
              | grep -w '{{ rancher_env_name }}'
-    - require:
-      - cmd: rancher_server_api_wait
 {% endfor %}
 {% endif %}

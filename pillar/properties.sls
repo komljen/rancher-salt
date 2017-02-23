@@ -7,7 +7,7 @@ nodes:
       - rancher-agent
       - docker-registry
   node01:
-    agentEnvironment: Default
+    agentEnvironment: Kubernetes
     roles:
       - rancher-agent
       - mysql-server
@@ -26,7 +26,7 @@ docker:
 # Rancher settings
 rancher:
   server:
-    version: stable
+    version: v1.4.1
     port: 8080
     #iface: eth0
     db:
