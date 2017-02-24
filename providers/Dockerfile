@@ -1,7 +1,7 @@
 FROM debian:jessie
 MAINTAINER Alen Komljen <alen.komljen@live.com>
 
-ENV SALT_VERSION v2016.3.2
+ENV SALT_VERSION v2016.3.5
 
 RUN \
   apt-get update && \
